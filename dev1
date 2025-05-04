@@ -1,23 +1,24 @@
-trigger:
-  - main
+name: Build Kotlin Project
 
-pool:
-  vmImage: 'ubuntu-latest'
+on:
+  push:
+    branches: [ "main" ]
 
-variables:
-  JAVA_HOME: '/usr/lib/jvm/java-21-openjdk'
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-steps:
-  - task: UseJava@1
-    inputs:
-      version: '21'
-      architecture: 'x64'
+    steps:
+    - uses: actions/checkout@v3
 
-  - script: ./gradlew clean build
-    displayName: 'Build with Gradle'
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
 
-  - task: PublishBuildArtifacts@1
-    inputs:
-      PathtoPublish: 'build/libs'
-      ArtifactName: 'drop'
-      publishLocation: 'Container'
+    - name: Grant execute permission to gradlew
+      run: chmod +x gradlew
+
+    - name: Build with Gradle
+      run: ./gradlew build
