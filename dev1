@@ -1,0 +1,23 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  JAVA_HOME: '/usr/lib/jvm/java-21-openjdk'
+
+steps:
+  - task: UseJava@1
+    inputs:
+      version: '21'
+      architecture: 'x64'
+
+  - script: ./gradlew clean build
+    displayName: 'Build with Gradle'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: 'build/libs'
+      ArtifactName: 'drop'
+      publishLocation: 'Container'
